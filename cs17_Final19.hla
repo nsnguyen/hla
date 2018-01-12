@@ -1,0 +1,106 @@
+// Set Bit Template Solution For CS 17 Final
+// CS 17 Students must use this template as the basis for their solution. 
+//I hope it will help simplify your development task.
+// Please look at the two todo: notes below
+program notsetBitProgram;
+#include( "stdlib.hhf" );
+
+static
+	iValue: int16 := 0;
+	iShift: int16 := 0;
+	iAnswer : int32 := 0;
+
+// todo: CS 17 Students add code below to implement this function
+// Several hints are supplied
+
+/////////////////////////////////////////
+//function isBitNotSet
+/////////////////////////////////////////
+procedure isBitNotSet( value : int16; shift : int16 );@nodisplay; @noframe;
+
+	static 
+		dReturnAddress : dword;
+		
+		dEDXRegister : dword := 0; //preserve DX
+		dECXRegister : dword := 0; //preserve CX
+		dEBXRegister : dword := 0; //preserve BX
+
+	begin isBitNotSet;
+	// entry sequence
+	// preserve registers used
+	mov(EBX, dEBXRegister);
+	mov(ECX, dECXRegister);
+	mov(EDX, dEDXRegister);
+	
+	pop(dReturnAddress); // this is the return address
+	pop(shift); //16-bit integer
+	pop(value); //16-bit integer
+	
+	// push back the return address
+	push(dReturnAddress);
+
+	// preserve registers (preserve EDX, ECX, EBX. EAX is used in this fuction)
+ 	push(dEDXRegister);
+	push(dECXRegister);
+	push(dEBXRegister);
+	
+	//EAX will be result for this function
+
+	// begin sub-task
+	ForLoopInitialize:
+	mov(0, BX); //register BX is index i=0	
+	mov(0,EAX); //EAX is return false initially
+	
+	ForLoopBegin:
+	cmp(BX, shift); //compare i to shift (i < shift)
+	jg ForLoopDone; //if (i>shift) jump to loop done
+	
+	mov(value, DX); //value becomes DX
+	shr(1,DX); //shift bit to the right one time
+	AND(%0000_0000_0000_0001, DX); //compare bit 0 with value variable
+	cmp(DX,0);
+	je ResultTrue;
+	jne ResultFalse;
+	
+	ResultTrue:
+	mov(1,EAX);
+	inc(BX); //i++
+	jmp ForLoopBegin;
+	
+	ResultFalse:
+	mov(0,EAX);
+	inc(BX); //i++
+	jmp ForLoopBegin;
+	
+	ForLoopDone:
+
+	// restore the registers used
+	pop(EDX);
+	pop(ECX);
+	pop(EDX);
+
+	// leave the answer in EAX
+	ret();
+
+	end isBitNotSet;
+
+
+
+///////main program///////
+begin notsetBitProgram;
+
+mov( 16, iValue);
+mov( 0, iShift );
+
+// todo: push parameters to the function.
+push(iValue);
+push(iShift);
+
+call isBitNotSet;
+
+mov( EAX, iAnswer );
+
+stdout.put( iAnswer );
+stdout.newln();
+
+end notsetBitProgram;

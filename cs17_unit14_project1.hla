@@ -1,0 +1,227 @@
+program WordsWithFriends;
+#include ("stdlib.hhf");
+
+static
+	myCharacter : byte :=0;
+	BigA : byte := $41; //A
+	BigB : byte := $42; //B
+	BigC : byte := $43; //C
+	BigD : byte := $44; //D
+	BigE : byte := $45; //E
+	BigF : byte := $46; //F
+	BigG : byte := $47; //G
+	BigH : byte := $48; //H
+	BigI : byte := $49; //I
+	BigJ : byte := $4A; //J
+	BigK : byte := $4B; //K
+	BigL : byte := $4C; //L
+	BigM : byte := $4D; //M
+	BigN : byte := $4E; //N
+	BigO : byte := $4F; //O
+	BigP : byte := $50; //P
+	BigQ : byte := $51; //Q
+	BigR : byte := $52; //R
+	BigS : byte := $53; //S
+	BigT : byte := $54; //T
+	BigU : byte := $55; //U
+	BigV : byte := $56; //V
+	BigW : byte := $57; //W
+	BigX : byte := $58; //X
+	BigY : byte := $59; //Y
+	BigZ : byte := $5A; //Z
+
+///////////////////////////////////////////////////
+//Function wwf
+/////////////////////////////////////////////////
+	procedure wwf( myCharacter: byte); @nodisplay; @noframe;
+	
+	static
+		returnAddress: dword;
+
+	
+	begin wwf;
+		//entry sequence
+		pop(returnAddress);
+		pop(AX);
+		push(returnAddress);
+		push(BX); //preserve BX which was used outside of procedure
+		
+		//take input and convert to all uppercase for ease of dealing only uppercase
+		mov(223,BL); // (223 = 1101_1111)
+		AND(BL,AL); //difference between upper and lower case is the bit position 5
+		
+		BeginCompare:
+		
+		//compare A
+		cmp(AL, BigA);
+		je case1;
+		
+		//compare B
+		cmp(AL, BigB);
+		je case4;
+		
+		//compare C
+		cmp(AL, BigC);
+		je case4;
+		
+		//compare D
+		cmp(AL, BigD);
+		je case2;
+		
+		//compare E
+		cmp(AL, BigE);
+		je case1;
+		
+		//compare F
+		cmp(AL, BigF);
+		je case4;
+		
+		//compare G
+		cmp(AL, BigG);
+		je case3;
+		
+		//compare H
+		cmp(AL, BigH);
+		je case3;
+		
+		//compare I
+		cmp(AL, BigI);
+		je case1;
+		
+		//compare J
+		cmp(AL, BigJ);
+		je case10;
+		
+		//compare K
+		cmp(AL, BigK);
+		je case5;
+		
+		//compare L
+		cmp(AL, BigL);
+		je case2;
+		
+		//compare M
+		cmp(AL, BigM);
+		je case4;
+		
+		//compare N
+		cmp(AL, BigN);
+		je case2;
+		
+		//compare O
+		cmp(AL, BigO);
+		je case1;
+		
+		//compare P
+		cmp(AL, BigP);
+		je case4;
+		
+		//compare Q
+		cmp(AL, BigQ);
+		je case10;
+		
+		//compare R
+		cmp(AL, BigR);
+		je case1;
+		
+		//compare S
+		cmp(AL, BigS);
+		je case1;
+		
+		//compare T
+		cmp(AL, BigT);
+		je case1;
+		
+		//compare U
+		cmp(AL, BigU);
+		je case2;
+		
+		//compare V
+		cmp(AL, BigV);
+		je case5;
+		
+		//compare W
+		cmp(AL, BigW);
+		je case4;
+		
+		//compare X
+		cmp(AL, BigX);
+		je case8;
+		
+		//compare Y
+		cmp(AL, BigY);
+		je case3;
+		
+		//compare Z
+		cmp(AL, BigZ);
+		je case10;
+		
+		jmp NoLetter; //if all doesn't match (not a letter)
+		
+		case1:
+		mov(1, AX);
+		jmp finish;
+		
+		case2:
+		mov(2, AX);
+		jmp finish;
+		
+		case3:
+		mov(3, AX);
+		jmp finish;
+		
+		case4:
+		mov(4, AX);
+		jmp finish;
+		
+		case5:
+		mov(5, AX);
+		jmp finish;
+		
+		case8:
+		mov(8, AX);
+		jmp finish;
+		
+		case10:
+		mov(10, AX);
+		jmp finish;
+		
+		
+		NoLetter:
+		mov(0,AX); //if input isn't a letter, AX register will become 0
+		
+		finish:
+		pop(BX);
+		ret();
+		end wwf;
+
+
+///Main Program//////////////////////
+
+begin WordsWithFriends;
+stdout.put("Feed Me: ");
+stdin.flushInput(); //flush all inputs just in case
+stdin.getc(); //store result in register AL
+
+mov(0,AH); //move register to AH
+push(AX); //push AX (AH + AL)
+
+mov(0,BX);
+
+call wwf; //function yields back AL
+cmp(BX,AX);
+je NotALetter;
+
+ALetter:
+stdout.put("in Words With Friends, that's ");
+stdout.puti8(AL);
+stdout.put(nl);
+jmp EndProgram;
+
+NotALetter:
+stdout.put("You didn't enter a letter");
+stdout.put(nl);
+
+EndProgram:
+
+end WordsWithFriends;

@@ -1,0 +1,114 @@
+program Quiz2Number21;
+#include ("stdlib.hhf");
+
+static
+	n: int16 := 0;
+	m: int16 := 0;
+
+///////////////////////////////////
+//Function evaluateRec using Recursion
+//////////////////////////////////
+procedure evaluateRec(n: int16; m:int16); @nodisplay; @noframe;
+static
+		returnAddress: dword;
+		
+begin evaluateRec;
+		///////get parameters////////
+		pop(returnAddress);
+		pop(m); //16 bit
+		pop(n); //16 bit
+		push(returnAddress);
+		
+		//need to preserve BX register which will be used in this function
+		push(BX);
+		
+		LoopBegin:
+		//if(n==0)
+		cmp(n,0);
+		je NisZero;
+		
+		//elseif(m==0)
+		cmp(m,0);
+		je MisZero;
+		jmp Neither;
+		
+		
+		NisZero:
+		stdout.put("n is ");
+		mov(n,BX); //register BX becomes n
+		cmp(BX,m); //compare BX to m
+		jg NmoreM; //if n>m
+		jl NlessM; //if n<m
+		je NequalM; //if n==m
+		
+			NmoreM:
+			stdout.put("greater than or equal to ");
+			jmp EndLoopForN;
+			
+			NlessM:
+			stdout.put("less than or equal to ");
+			jmp EndLoopForN;
+			
+			NequalM:
+			stdout.put("equal to ");
+			jmp EndLoopForN;
+			
+		EndLoopForN:
+		stdout.put("to m");
+		jmp EndFunction;
+		
+		MisZero:
+		stdout.put("m is ");
+		mov(m,BX); //register BX becomes m
+		cmp(BX,n); //compare BX to n
+		jg MmoreN; //if m>n
+		jl MlessN; //if M<n
+		je MequalN; //if m==n
+		
+			MmoreN:
+			stdout.put("greater than or equal to ");
+			jmp EndLoopforM;
+			
+			MlessN:
+			stdout.put("less than or equal to ");
+			jmp EndLoopforM;
+			
+			MequalN:
+			stdout.put("equal to ");
+			jmp EndLoopforM;
+		
+		EndLoopforM:
+		stdout.put("to n");
+		jmp EndFunction;
+		
+		Neither:
+		dec(n); //decrease parameter n by 1
+		dec(m); //decrease parameter m by 1
+		push(n); //push n back into stack first
+		push(m); //push m into stack second
+		call evaluateRec; //recursive function
+		jmp EndFunction;
+		
+		EndFunction:
+		//getting back preserved BX value
+		pop(BX);
+		ret();
+
+end evaluateRec;
+
+////Main Program///////
+begin Quiz2Number21;
+stdout.put("Gimme an n: ");
+stdin.get(n);
+stdout.put("Gimme an m: ");
+stdin.get(m);
+
+//push into stack
+push(n);
+push(m);
+
+call evaluateRec;
+stdout.put(nl);
+
+
+end Quiz2Number21;

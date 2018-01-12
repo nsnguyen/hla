@@ -1,0 +1,16 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 6 
+
+program FavoriteSport;
+#include ("stdlib.hhf");
+
+begin FavoriteSport;
+	stdout.put("BBB     A     SSSS EEEEE BBB     A   L     L     !", nl);
+	stdout.put("B  B   A A   S     E     B  B   A A  L     L     !", nl);
+	stdout.put("BBB   AAAAA  SSSS  EEE   BBB   AAAAA L     L     !", nl);
+	stdout.put("B  B  A   A      S E     B  B  A   A L     L     !", nl);
+	stdout.put("BBB   A   A  SSSS  EEEEE BBB   A   A LLLLL LLLLL !", nl);
+	
+
+end FavoriteSport;

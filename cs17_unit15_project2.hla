@@ -1,0 +1,147 @@
+program SwapperProb;
+#include("stdlib.hhf");
+
+static
+	iValue1 : int16 := 0;
+	iValue2 : int16 := 0;
+	iValue3 : int16 := 0;
+	
+	
+///////////////////////////////////////
+//function swapper
+////////////////////////////
+procedure swapper(var x: int16; var y: int16; var z: int16); @nodisplay; @noframe;
+
+	// uses the registers EDX, ECX, and EBX
+	static
+		dReturnAddress: dword;
+		
+		iTemporary: int16;
+		
+		dEDXRegister : dword := 0;   // preserve EDX 
+		dECXRegister : dword := 0;   // preserve ECX
+		dEBXRegister : dword := 0;   // preserve EBX
+		dEAXRegister : dword := 0;   // preserve EAX 
+
+		
+		begin swapper;
+		//entry sequence
+		
+		//preserve registers
+		mov( EAX, dEAXRegister );
+		mov( EBX, dEBXRegister );
+		mov( ECX, dECXRegister );
+		mov( EDX, dEDXRegister );
+		
+		pop(dReturnAddress); //return address
+		pop(ECX); //pop address of iValue3(which is z) and store in ECX
+		pop(EBX); //pop address of iValue2(which is y) and store in EBX
+		pop(EAX); //pop address of iValue1(which is x) and store in EAX
+		
+		//push back return address
+		push(dReturnAddress);
+		
+		//preserve registers
+		push(dEDXRegister);
+		push(dECXRegister);
+		push(dEBXRegister);
+		push(dEAXRegister);
+		
+		//////algorithm///////////
+		// if x > y then swap
+		// else if x > z then swap
+		// else if y > z then swap
+		//////////////////////
+		
+		
+		mov([EAX], ESI); //move *x to esi
+		mov([EBX], EDI); //move *y to esi
+		
+		cmp(SI,DI); //to compare x and y
+		jge XBiggerThanY; //if x>y, then swap x and y
+		jmp CompareXandZ;
+		
+		XBiggerThanY: //since x>y, then swap them
+		mov([EAX], EDX);
+		mov(DX, iTemporary); //move x into iTemporary
+		mov([EBX],EDX); //move y into x
+		mov(DX, [EAX]);
+		mov(iTemporary, DX); //move iTemporary (which is x) into y
+		mov(DX, [EBX]);
+		
+		CompareXandZ:
+		mov([EAX], ESI);
+		mov([ECX], EDI);
+		
+		cmp(SI,DI); //compare x and z
+		jge XBiggerThanZ;
+		jmp CompareYandZ;
+		
+		XBiggerThanZ: //since x>z, then swap  them
+		mov([EAX],EDX);
+		mov(DX, iTemporary); //move x into iTemporary
+		mov([ECX], EDX); //move z into x
+		mov(DX,[EAX]);
+		mov(iTemporary, DX); //move iTemporary (which is x) into z
+		mov(DX, [ECX]);
+		
+		CompareYandZ:
+		mov([EBX], ESI);
+		mov([ECX], EDI);
+		
+		cmp(SI,DI); //compare x and z
+		jge YBiggerThanZ;
+		jmp finish;
+		
+		YBiggerThanZ:
+		mov([EBX], EDX);
+		mov(DX, iTemporary); //move y into iTemporary
+		mov([ECX], EDX); //move z into y
+		mov(DX, [EBX]);
+		mov(iTemporary, DX); //move iTemporary (which is y) into z
+		mov(DX, [ECX]);
+		
+		finish:
+		//restore registers
+		pop(EAX);
+		pop(EBX);
+		pop(ECX);
+		pop(EDX);
+		
+		ret();
+		
+		end swapper;
+		
+		
+
+//////main program////////
+begin SwapperProb;
+
+	stdout.put("Gimme X: ");
+	stdin.get(iValue1);
+	
+	stdout.put("Gimme Y: ");
+	stdin.get(iValue2);
+	
+	stdout.put("Gimme Z: ");
+	stdin.get(iValue3);
+	
+	lea(EAX, iValue1); //get address of iValue1 and store in EAX
+	push(EAX); //push to stack
+	
+	lea(EAX, iValue2); //get address of iValue2 and store in EAX
+	push(EAX); //push to stack
+	
+	lea(EAX,iValue3); //get address if iValue3 and store in EAX
+	push(EAX); //push to stack
+	
+	call swapper;
+	
+	stdout.put(nl);
+	stdout.put("After sorting, ");
+	stdout.put( " X = ", iValue1 );
+	stdout.put( " Y = ", iValue2 );
+	stdout.put( " Y = ", iValue3 );
+	stdout.put(nl);
+
+end SwapperProb;

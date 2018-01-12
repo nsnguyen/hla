@@ -1,0 +1,90 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 7 Project 2
+
+program DoubleTable;
+#include ("stdlib.hhf");
+
+static
+	iDataValue : int32 := 0; //initalize input value
+
+begin DoubleTable;
+	//get user input
+	stdout.put("Gimme a starting value: ");
+	stdin.get(iDataValue);
+	stdout.put("Double Table", nl);
+	
+	//move iDataValue to register EAX and EBX
+	mov(iDataValue, EAX); //to increment by multiple of 2 by rotating bits to left
+	mov(iDataValue, EBX); //to increment value by 1 down the column
+	
+	//Row 1
+	stdout.put(iDataValue, stdio.tab);
+	//rotate left to multiply by 2 (rotate right to divide by 2)
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+	
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+	
+	stdout.put(nl);
+	
+	//Row 2
+	//move register EBX (original value) back to register EAX
+	mov(EBX,EAX);
+	//add 1 to new register
+	add(1,EAX);
+	mov(EAX,EBX);
+	mov(EAX,iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//rotate left to multiply by 2 (rotate right to divide by 2)
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+	
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+
+	stdout.put(nl);
+
+	//Row 3
+	//move register EBX (original value) back to register EAX
+	mov(EBX,EAX);
+	//add 1 to new register
+	add(1,EAX);
+	mov(EAX,EBX);
+	mov(EAX,iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//rotate left to multiply by 2 (rotate right to divide by 2)
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+	
+	rol(1, EAX);
+	//put value back into iDataValue
+	mov(EAX, iDataValue);
+	stdout.put(iDataValue, stdio.tab);
+	//put new value back into register EAX;
+	mov(iDataValue, EAX);
+
+	stdout.put(nl);
+	
+end DoubleTable;

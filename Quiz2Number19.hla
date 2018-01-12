@@ -1,0 +1,72 @@
+program Quiz2Number19;
+#include ("stdlib.hhf");
+
+static
+	n: real32 := 0; //variable to store input n
+	
+/////////////////////////////
+//Function expression
+/////////////////////////////
+
+procedure expression(n: real32); @nodisplay; @noframe;
+static
+	returnAddress: dword;
+	x: real32 :=0; //result will be stored here
+	
+begin expression;
+	//entry sequence
+	pop(returnAddress);
+	pop(n);
+	push(returnAddress);
+	
+	/////////////////////////////////
+	//compute  f(n) = -7n^3 + 4n^2 - 12
+	//////////////////////////////////
+	
+	finit(); //start FPU
+	
+	//first term
+	fld(n); //load n into FPU
+	fld(n); //load n
+	fmulp(); //compute n^2 and push back to FPU
+	fld(n); //load n
+	fmulp(); //computer n^3
+	fld(-7.0); //load -7.0
+	fmulp(); //multiply 7n^3
+	
+	//second term
+	fld(n); //load n
+	fld(n); //load n
+	fmulp(); //compute n^2 and push bach to FPU
+	fld(4.0); //load 4.0
+	fmulp(); //multiply 4n^2
+	
+	//add first term and second term
+	faddp(); //compute -7n^3 + 4n^2
+	
+	//subtract third term
+	fld(-12.0);
+	faddp();
+	
+	fstp(x); //store result in x
+	
+	mov(x, EBX);
+	
+	ret();
+
+end expression;
+
+/////////Main Program///////////////
+begin Quiz2Number19;
+stdout.put("input n",nl);
+stdin.get(n);
+
+//prepare stack
+push(n);
+
+call expression;
+stdout.put("n= ");
+stdout.putr32(EBX,10,5,' ');
+stdout.put(nl);
+
+end Quiz2Number19;

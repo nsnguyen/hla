@@ -1,0 +1,159 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 8 Project 2
+
+program ImportantNumberGame;
+#include ("stdlib.hhf");
+
+static
+	inputImportantValue: int8 := 0; //input important number
+	inputValue1: int8 := 0; //input first number
+	inputValue2: int8 := 0; //input second number
+	inputValue3: int8 := 0; //input third number
+	inputValue4: int8 := 0; //input fourth number
+	inputValue5: int8 := 0; //input fifth number
+	counterGreater: int8 :=0; //counter for Greater values
+	counterLesser: int8 :=0; //counter for Lesser Values
+	counterImportant: int8 :=0; //counter for important values
+	
+begin ImportantNumberGame;
+
+	//input of important Value
+	stdout.put("Gimme the important number ");
+	stdin.get(inputImportantValue);
+	
+	//input of first Value
+	stdout.put("1: ");
+	stdin.get(inputValue1);
+	
+	//input of second Value
+	stdout.put("2: ");
+	stdin.get(inputValue2);
+	
+	//input of third value
+	stdout.put("3: ");
+	stdin.get(inputValue3);
+	
+	//input of forth value
+	stdout.put("4: ");
+	stdin.get(inputValue4);
+	
+	//input of fifth value
+	stdout.put("5: ");
+	stdin.get(inputValue5);
+	
+	LoopInitialize:
+	mov(0, BL); //register will be used to store input values
+	mov(1, CL); //register counter that will be used to determine 1st, 2nd value etc
+	mov(0, DL); //counter for greater value or lesser value counter and important counter
+	
+	LoopStarter:
+	
+	FirstValueCompare:
+	cmp(CL, 1); // compare register counter if it matches 1st number
+	jne SecondValueCompare; //jump to 2nd
+	mov(inputValue1, BL);
+	cmp(BL,inputImportantValue);	
+	jne LoopNeverImportant;
+	je LoopEqualImportant;	
+	
+	SecondValueCompare:
+	cmp(CL, 2); //compare if it matches 2nd number
+	jne ThirdValueCompare;//jump to 3rd
+	mov(inputValue2, BL);
+	cmp(BL, inputImportantValue);
+	jne LoopNeverImportant;
+	je LoopEqualImportant;
+	
+	ThirdValueCompare:
+	cmp(CL, 3); //compare if it matches 3rd number
+	jne FourthValueCompare; //jump to 4th
+	mov(inputValue3, BL);
+	cmp(BL, inputImportantValue);
+	jne LoopNeverImportant;
+	je LoopEqualImportant;
+	
+	FourthValueCompare:
+	cmp(CL, 4); //compare if it matches 4th number
+	jne FifthValueCompare; //jump to 5th value
+	mov(inputValue4, BL);
+	cmp(BL, inputImportantValue);
+	jne LoopNeverImportant;
+	je LoopEqualImportant;
+	
+	FifthValueCompare:
+	cmp(CL, 5); //compare if it matches 5th number
+	jne LoopEnd; //end and print out values
+	mov(inputValue5, BL);
+	cmp(BL, inputImportantValue);
+	jne LoopNeverImportant;
+	je LoopEqualImportant;
+	
+	
+	LoopNeverImportant:
+	cmp(BL,inputImportantValue); //compare inputValue(s) registry to ImportantValue
+	jg LoopGreaterValue; //jump if value is greater
+	jl LoopLesserValue; // jump if value is lesser
+	
+	LoopEqualImportant:
+	mov(counterImportant, DL);
+	inc(DL); //add 1 if # input value matches important value
+	mov(DL, counterImportant);
+	inc(CL); //increment counter for next input value
+	jmp LoopStarter;
+	
+	LoopGreaterValue:
+	mov(counterGreater, DL);
+	inc(DL); //add 1 if # if greater than important value
+	mov(DL, counterGreater);
+	inc(CL); //increment counter for next input value
+	jmp LoopStarter;
+	
+	LoopLesserValue:
+	mov(counterLesser, DL);
+	inc(DL); //add 1 if # less than important value
+	mov(DL, counterLesser);
+	inc(CL); //increment counter for next input value
+	jmp LoopStarter;
+	
+	LoopEnd:
+	cmp(counterImportant, 0);
+	je LoopTextNoImportantNumber;
+	jne LoopTextImportantNumber;
+	
+	LoopTextNoImportantNumber:
+	stdout.put("You never entered the important number", nl);
+	cmp(counterLesser, 0);
+	je LoopTextNoLesserValue;
+	jne LoopTextLesserValue;
+	
+	LoopTextImportantNumber:
+	stdout.put("You entered the important number ", counterImportant, " time",nl);
+	cmp(counterLesser, 0);
+	je LoopTextNoLesserValue;
+	jne LoopTextLesserValue;
+	
+	LoopTextNoLesserValue:
+	stdout.put("You never entered any values less than the important number",nl);
+	cmp(counterGreater,0);
+	je LoopTextNoGreaterValue;
+	jne LoopTextGreaterValue;
+	
+	LoopTextLesserValue:
+	stdout.put("You entered ", counterLesser, " values less than the important number",nl);
+	cmp(counterGreater,0);
+	je LoopTextNoGreaterValue;
+	jne LoopTextGreaterValue;
+	
+	LoopTextNoGreaterValue:
+	stdout.put("You never entered any values more than the important number",nl);
+	jmp LoopOhYeahImDoneGG;
+	
+	LoopTextGreaterValue:
+	stdout.put("You entered ", counterGreater, " values greater than the important number",nl);
+	jmp LoopOhYeahImDoneGG;
+	
+	
+	LoopOhYeahImDoneGG:
+	
+end ImportantNumberGame;

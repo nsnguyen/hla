@@ -1,0 +1,142 @@
+
+program StringProgram;
+
+#include( "stdlib.hhf" ); 
+#include( "cs17Final.hla" );
+
+static
+stringData : dword;
+
+ //////////////////////////////////////////
+ //Function isIdentical
+ /////////////////////////////////
+procedure isIdentical( stringData : dword ); @nodisplay; @noframe;
+	static
+		dReturnAddress : dword;
+		
+		dEBXRegister : dword := 0; //preserve EBX
+		dECXRegister : dword := 0; //preserve ECX
+		wDXRegister : word := 0; //preserve DX
+		wDIRegister : word := 0;
+		
+		letter : dword :=0;
+		
+	begin isIdentical;
+	// entry sequence
+	// preserve registers used
+	mov(EBX, dEBXRegister);
+	mov(DX, wDXRegister);
+	
+	pop( dReturnAddress ); // this is the return address
+	pop(EBX); //base address of string
+
+	// push back the return address
+	push( dReturnAddress );
+
+	// preserve registers
+	push(dEBXRegister);
+	push(wDXRegister);
+	push(dECXRegister);
+	push(wDIRegister);
+ 
+
+	// begin sub-task
+	
+	//EAX to pass boolean
+	//EBX contains base address of array
+	//DH is null character
+	//DL is loop index i
+	//ECX is used to compare string in this case 'letter'
+	
+	
+	LoopStart:
+	mov(1,EAX); //EAX is true by default
+				//EBX will be address of A[i]
+				
+	mov(0,DH); //0 is NULL for DH
+	mov([EBX], letter); //letter = stringData[i=0];
+	
+	LoopTerminate:
+	cmp([EBX], DH); //while(stringData[i] != NULL)
+	je LoopEnd;
+	
+	LoopBody:
+	mov([EBX],ECX); //ECX = stringData[i] (ECX is next letter in string)
+	cmp(ECX, letter); //if(letter != stringData[i]) then return 0 and break.
+	je LoopMatched;
+	jmp NoMatched;
+	
+	NoMatched:
+	mov(0,EAX);
+	jmp LoopEnd;
+	
+	LoopMatched:
+	LoopIncrement:
+	mov(ECX,letter);
+	inc(EBX); //loop to next element position
+	jmp LoopTerminate;
+	
+
+		
+	LoopEnd:
+	
+	
+	// restore the registers used
+	pop(DI);
+	pop(ECX);
+	pop(DX);
+	pop(EBX);
+	ret();
+
+ 
+
+	end isIdentical;
+
+
+ 
+///main program////////
+begin StringProgram;
+
+ stdout.put( "Please enter a string to process", nl );
+
+// this code prompts for a length and allocates a string that size
+
+mov( @size( int8 ), AL );
+mov( 80, BL );
+inc( BL ); 
+mul( BL );
+mov( 0, EBX );
+mov( AX, BX );
+malloc( EBX );
+mov( EAX, stringData );
+
+// let's try reading a value into the string
+mov( &stringData, EAX );
+push( EAX );
+mov( 80, CX );
+push( CX );
+call gets;
+
+// print the string
+stdout.put( "----> here is the string you entered: " );
+mov( &stringData, EAX );
+push( EAX );
+call puts;
+stdout.newln();
+
+// initialize EAX before calling the function.
+mov( 0, EAX ); 
+
+// todo: send a string parameter to the function and call isIdentical 
+mov(&stringData, EAX);
+push(EAX); //addres of string
+
+call isIdentical; //show the results
+
+// show the results
+
+stdout.put( "result=" );
+stdout.put( EAX );
+stdout.newln();
+
+end StringProgram;

@@ -1,0 +1,214 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 9 Project 1
+
+program SMCFeeCalculator;
+#include ("stdlib.hhf");
+
+static
+	
+	enrollmentfee_resident: int16 := 46; //enrollment fee per unit for resident
+	enrollmentfee_nonresident: int16 := 315; //enrollement fee per unit for non-resident
+	serviceFee_Winter_Summer: int16 := 47; //service Fee for Winter and Summer semesters
+	serviceFee_Fall_Spring: int16 := 50; //service Fee for Fall and Spring
+	parkingFee_Winter_Summer: int16 := 45; //parking fee for winter and sumer semesters
+	parkingFee_Fall_Spring: int16 := 85; //parking fee for fall and spring semesters
+	
+	isSemester: int8 :=0; //variable to check which semester
+	isParking: int8 :=0; //variable to check parking
+	isResident: int8 :=0; //variable to check residency
+	isEnrolledUnit: int8 :=0; //variable to check enrolled Units
+
+	TotalCost: int16 :=0; //accumulate total cost
+
+begin SMCFeeCalculator;
+
+	stdout.put("Feed me (2 hex digits with the bits prsseeee): ");
+	stdin.get(BL); //get user to input 2 hex digits into BL register (8-bit);
+	
+	//format for user input with 8-bit prsseeee (2 hex number)
+	//p = parking decal 1=yes 0 =no
+	//r = resident 1=yes 0 = no
+	//ss = semester 00=fall 01=winter 10=spring 11=summer
+	//eeee = enrolled units
+	
+	mov(BL,BH); //copy user input to BH register (want to keep BL register as raw just in case something happens)
+	mov(48,CH); //put decimal 48 (0011_0000) into CH register to allow those binary digits to be 1=true
+	AND(CH,BH); //masking binary to 00xx_0000 (semester binary digits only) and put back into BH register
+	mov(BH,isSemester); //store in memory variable
+	
+	mov(BL,BH); //copy user input to BH register (want to keep BL register as raw just in case something happens)
+	mov(128,CH); //put decimal 128(1000_0000) into CH register to allow those binary digits to be 1=true
+	AND(CH,BH); //masking binary to x000_0000 (parking binary digit only) and put back into BH register
+	mov(BH, isParking); //store in memory variable
+	
+	mov(BL,BH); //copy user input to BH register (want to keep BL register as raw just in case something happens)
+	mov(64,CH); //put decimal 64(0100_0000) into CH register to allow those binary digits to be 1=true
+	AND(CH,BH); //masking binary to 0x00_0000 (resident binary digit only) and put back into BH register
+	mov(BH,isResident); //store in memory variable
+	
+	mov(BL,BH); //copy user input to BH register (want to keep BL register as raw just in case something happens)
+	mov(15,CH); //put decimal 15(0000_1111) into CH register to allow those binary digits to be 1=true
+	AND(CH,BH); //masking binary to 0000_xxxx (enrolled binary digit only) and put back into BH register
+	mov(BH,isEnrolledUnit); //store in memory variable
+	
+	//*********COMPARE SEMESTERS *********************//
+	mov(0, CH); //0= 0000_0000
+	cmp(CH,isSemester); //compare semester to 00(fall)
+	je FallSemester; //if true, jump to FallSemester label
+	
+	mov(16,CH); //16=0001_0000
+	cmp(CH,isSemester); //compare semester to 01(winter)
+	je WinterSemester; //if true, jump to WinterSemester label
+	
+	mov(32,CH); //32=0010_0000
+	cmp(CH,isSemester); //compare semester to 10(Spring)
+	je SpringSemester; //if true, jump to SpringSemester label
+	
+	mov(48,CH); //48=0011_0000
+	cmp(CH,isSemester); //compare semester to 11(summer)
+	je SummerSemester; //if true, jump to SummerSemester label
+	
+	stdout.put("Error Input");
+	jmp EndSemester;
+	
+	//********Total Fee**********************//
+	TotalFee:
+	stdout.put("Total Fees = $ ", TotalCost,nl);
+	jmp EndSemester;
+	
+	
+	//*********Section for Parking ***********//
+		ParkingSummer:
+		ADD(parkingFee_Winter_Summer,DX);
+		mov(DX,TotalCost);
+		jmp TotalFee;
+	
+		ParkingFall:
+		ADD(parkingFee_Fall_Spring,DX);
+		mov(DX,TotalCost);	
+		jmp TotalFee;
+	
+		ParkingWinter:
+		ADD(parkingFee_Winter_Summer,DX);
+		mov(DX,TotalCost);	
+		jmp TotalFee;
+	
+		ParkingSpring:
+		ADD(parkingFee_Fall_Spring,DX);
+		mov(DX,TotalCost);	
+		jmp TotalFee;
+	
+	Parking:
+	stdout.put("Parking",nl);
+	mov(TotalCost,DX);
+	
+	//compare semester again (unefficient way but doable)
+	mov(0, CH); //0= 0000_0000
+	cmp(CH,isSemester); //compare semester to 00(fall)
+	je ParkingFall; //if true, jump to FallSemester label
+	
+	mov(16,CH); //16=0001_0000
+	cmp(CH,isSemester); //compare semester to 01(winter)
+	je ParkingWinter; //if true, jump to WinterSemester label
+	
+	mov(32,CH); //32=0010_0000
+	cmp(CH,isSemester); //compare semester to 10(Spring)
+	je ParkingSpring; //if true, jump to SpringSemester label
+	
+	mov(48,CH); //48=0011_0000
+	cmp(CH,isSemester); //compare semester to 11(summer)
+	je ParkingSummer; //if true, jump to SummerSemester label
+	
+	
+	
+	NoParking:
+	stdout.put("No Parking",nl);
+	
+	jmp TotalFee;
+
+	//*********Section for Resident **********//
+	Resident:
+	stdout.put("CA Resident",nl);
+	mov(0,AH);
+	mov(isEnrolledUnit,AL);
+		//loop for unit for resident
+		ResidentUnitLoop:
+		SUB(1,AL);
+		mov(TotalCost,DX);
+		ADD(enrollmentfee_resident,DX);
+		mov(DX,TotalCost);
+		cmp(AH,AL);
+		jne ResidentUnitLoop;
+		
+	mov(128,CH);
+	cmp(CH,isParking);
+	je Parking;
+	jne NoParking;
+	
+	NonResident:
+	stdout.put("Non-Resident",nl);
+	mov(0,AH);
+	mov(isEnrolledUnit,AL);
+		//loop for unit for resident
+		NonResidentUnitLoop:
+		SUB(1,AL);
+		mov(TotalCost,DX);
+		ADD(enrollmentfee_nonresident,DX);
+		mov(DX,TotalCost);
+		cmp(AH,AL);
+		jne NonResidentUnitLoop;
+	
+	mov(128,CH);
+	cmp(CH,isParking);
+	je Parking;
+	jne NoParking;
+	
+	//**********Section for Semester *********//
+	FallSemester:
+	stdout.put("Fall Semester",nl); //print semester
+	stdout.put(isEnrolledUnit," unit",nl); //print # of unit
+	mov(TotalCost,DX); //move total cost to register DX
+	ADD(serviceFee_Fall_Spring,DX); //add service fee to register DX
+	mov(DX,TotalCost); //total cost includes service fee
+	mov(64,CH); //64 = 0100_0000
+	cmp(CH,isResident); //compare CH to isResident
+	je Resident; //jump to Resident label if true
+	jne NonResident; //jump to non resident label if false
+	
+	WinterSemester:
+	stdout.put("Winter Semester",nl);
+	stdout.put(isEnrolledUnit," unit",nl); //print # of unit
+	mov(TotalCost,DX); //move total cost to register DX
+	mov(serviceFee_Winter_Summer,DX); //add service fee to register DX
+	mov(DX,TotalCost); //total cost includes service fee
+	mov(64,CH); //64 = 0100_0000
+	cmp(CH,isResident); //compare CH to isResident
+	je Resident; //jump to Resident label if true
+	jne NonResident; //jump to non resident label if false
+	
+	SpringSemester:
+	stdout.put("Spring Semester",nl);
+	stdout.put(isEnrolledUnit," unit",nl); //print # of unit
+	mov(TotalCost,DX); //move total cost to register DX
+	mov(serviceFee_Fall_Spring,DX); //add service fee to register DX
+	mov(DX,TotalCost); //total cost includes service fee
+	mov(64,CH); //64 = 0100_0000
+	cmp(CH,isResident); //compare CH to isResident
+	je Resident; //jump to Resident label if true
+	jne NonResident; //jump to non resident label if false
+	
+	SummerSemester:
+	stdout.put("Summer Semester",nl);
+	stdout.put(isEnrolledUnit," unit",nl); //print # of unit
+	mov(TotalCost,DX); //move total cost to register DX
+	mov(serviceFee_Winter_Summer,DX); //add service fee to register DX
+	mov(DX,TotalCost); //total cost includes service fee
+	mov(64,CH); //64 = 0100_0000
+	cmp(CH,isResident); //compare CH to isResident
+	je Resident; //jump to Resident label if true
+	jne NonResident; //jump to non resident label if false
+	
+	EndSemester:
+	
+end SMCFeeCalculator;

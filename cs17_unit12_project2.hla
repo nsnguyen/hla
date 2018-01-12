@@ -1,0 +1,71 @@
+program VolumeCone;
+#include ("stdlib.hhf");
+
+static
+	r: real32 := 0 ; //variable for radius of cone
+	h: real32 := 0 ; //variable for height of cone
+	
+//////////////////////////
+//Function FindVolume
+//////////////////////////
+
+procedure FindVolume(r: real32; h: real32); @nodisplay; @noframe;
+static
+	returnAddress: dword;
+	x: real32 := 0; // result will be stored here
+	
+begin FindVolume;
+
+	//entry sequence
+	pop(returnAddress);
+	pop(r);
+	pop(h);
+	//push back return address
+	push(returnAddress);
+	
+		//////////////////////////////////////////////////////
+		//Computation of Volume of Cone (1/3 * pi * r^2 * h);
+		//////////////////////////////////////////////////////
+		
+		finit(); //start FPU
+		
+		fld(r); //load r
+		fld(st0); //duplicate r on TOS
+		fmulp(); //compute r^2
+		fldpi(); //load pi
+		fmulp(); // computer r^2 * pi
+		fld(h); //load h
+		fmulp(); // computer r^2 * pi * h
+		fld(3.0); //load 3.0
+		fdivp();
+
+		
+		fstp(x); //store result in x
+		
+		mov(x,EBX);
+		
+		ret();
+
+end FindVolume;
+
+
+
+
+///////Main Program/////////////
+begin VolumeCone;
+stdout.put("Lemme calculate the volume of a cone!", nl);
+stdout.put("Gimme r: ");
+stdin.get(r);
+stdout.put("Gimme h: ");
+stdin.get(h);
+
+//prepare stack
+push(h);
+push(r);
+
+call FindVolume;
+
+stdout.put("Volume = ");
+stdout.putr32(EBX,10,5, ' ');
+stdout.put(nl);
+end VolumeCone;

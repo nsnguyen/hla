@@ -1,0 +1,106 @@
+
+program ReferenceProgram;
+#include( "stdlib.hhf" );
+
+static 
+	iValue1 : int16 := 0;
+	iValue2 : int16 := 0;
+	
+// todo: CS 17 Students add code below to implement this function
+// Several hints are supplied
+procedure makeSevenIfBothLess( var i : int16; var j : int16 );@nodisplay; @noframe;
+
+	static 
+		dReturnAddress : dword;
+		
+		dEDXRegister : dword := 0;   // preserve EDX 
+		dECXRegister : dword := 0;   // preserve ECX
+		dEBXRegister : dword := 0;   // preserve EBX
+		dEAXRegister : dword := 0;   // preserve EAX
+		constSeven : int32 := 7; //constant 7
+		
+	begin makeSevenIfBothLess;
+
+	// entry sequence
+	// preserve registers used
+	mov( EBX, dEBXRegister );
+	mov( ECX, dECXRegister );
+	mov( EDX, dEDXRegister );
+	mov( EAX, dEAXRegister);
+	
+	pop( dReturnAddress );   // this is the return address
+	pop(EBX); //pop address of iValue2 (which is j)
+	pop(ECX); //pop address of iValue1 ( which is i)
+
+	// push back the return address 
+	push( dReturnAddress );
+
+	// preserve registers
+	push(dEDXRegister);
+	push(dECXRegister);
+	push(dEBXRegister);
+	push(dEAXRegister);
+	
+	////////algorithm//////
+	// if(*i < 7 ) && *j <7)
+	// *i = 7;
+	// *j = 7;
+	/////////////
+	
+	// begin sub-task
+	mov([EBX], ESI); // mov *j to ESI
+	mov([ECX], EDI); //EDI *i is EDI
+	
+	CompareI:
+	cmp(ESI,7);
+	je CompareJ;
+	
+	mov(constSeven,[ECX]);
+	jmp CompareJ;
+	
+	CompareJ:
+	cmp(EDI, 7);
+	je Finish;
+	
+	mov(constSeven,[EBX]);
+	
+	Finish:
+	// restore the registers used
+	pop(EAX);
+	pop(EBX);
+	pop(ECX);
+	pop(EDX);
+	//transfer control
+	ret();
+
+ 
+
+	end makeSevenIfBothLess;
+
+
+//////////Main Program//////
+begin ReferenceProgram;
+
+mov( 1, iValue1 );
+mov( 2, iValue2 );
+
+// todo: push parameters to the function. 
+// Please remember that these parameters must be passed by-reference.
+lea(EAX, iValue1); //get address of iValue1
+push(EAX); //push to stack
+
+lea(EAX, iValue2); //get address of iValue2
+push(EAX); //push to stack
+
+call makeSevenIfBothLess;
+
+
+stdout.put( "the first parameter = " );
+stdout.put( iValue1 );
+stdout.put( " the second parameter = " );
+stdout.put( iValue2 );
+stdout.newln();
+
+ 
+
+end ReferenceProgram;

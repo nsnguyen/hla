@@ -1,0 +1,83 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 6 Project 2
+
+
+
+program SquareTable;
+#include ("stdlib.hhf");
+
+static
+	usrInput : int8 := 0; //the value to 8-bit
+
+begin SquareTable;
+	//prompt user to input a number (8-bit)
+	stdout.put("Gimme a starting value:", nl);
+	stdin.get(usrInput);
+	
+	//move usrInput memory variable to register in order to subtract
+	mov(usrInput,al); //calculation will be made using al register
+	
+	/* 1- Begin Right Row 1 */
+	
+	//print first number
+	stdout.put(usrInput, stdio.tab);
+	
+	//subtract across row 1 only
+	//print second number
+	sub(1,al);
+	mov(al, usrInput);
+	stdout.put(usrInput, stdio.tab);
+	
+	//print third number
+	sub(1,al);
+	mov(al,usrInput);
+	stdout.put(usrInput, stdio.tab);
+	
+	//print fourth number
+	sub(1,al);
+	mov(al,usrInput);
+	stdout.put(usrInput, stdio.tab);
+	
+	/*2 - Begin Right Row 2 */
+	add(2,al);
+	mov(al, usrInput);
+	stdout.put(nl);
+	stdout.put(usrInput, stdio.tab, stdio.tab,stdio.tab);
+	
+	mov(usrInput,al);
+	sub(3,al);
+	mov(al,usrInput);
+	stdout.put(usrInput);
+	
+	/*3 - Begin Righ Row 3 */
+	add(2,al);
+	mov(al,usrInput);
+	stdout.put(nl);
+	stdout.put(usrInput,stdio.tab,stdio.tab,stdio.tab);
+	
+	mov(usrInput,al);
+	sub(3,al);
+	mov(al,usrInput);
+	stdout.put(usrInput);
+	
+	/*4- Begin Right Row 4 */
+	add(2,al);
+	mov(al,usrInput);
+	stdout.put(nl);
+	stdout.put(usrInput, stdio.tab);
+	
+	sub(1,al);
+	mov(al,usrInput);
+	stdout.put(usrInput,stdio.tab);
+	
+	sub(1,al);
+	mov(al,usrInput);
+	stdout.put(usrInput,stdio.tab);
+	
+	sub(1,al);
+	mov(al,usrInput);
+	stdout.put(usrInput,stdio.tab);
+	
+	stdout.put(nl);
+end SquareTable;

@@ -1,0 +1,55 @@
+program speedConversion;
+#include ("stdlib.hhf");
+
+static
+	a : real32 :=0; //user input variable
+
+//////////////////////////////////
+//Function convertSpeed
+//////////////////////////////////
+procedure convertSpeed(a: real32); @nodisplay; @noframe;
+static
+	returnAddress: dword;
+	x :real32 := 0;
+	conversionConstant : real32 := 0.621371;
+	
+	
+begin convertSpeed;
+	
+	//entry sequence
+	pop (returnAddress);
+	pop(a);
+	//push back return address
+	push(returnAddress);
+	
+	//compute x
+	finit(); //start FPU
+	
+	fld(a); //load conversion constant
+	fld(conversionConstant); //load conversion constant
+	
+	fmulp(); //compute kilometer * conversion constant
+	fstp(x); //store result into x
+	
+	mov(x,EBX);
+	
+	ret();
+
+end convertSpeed;
+
+//////////////////main program ////////////////////////////
+begin speedConversion;
+
+stdout.put("Km per hour :");
+stdin.get(a);
+
+//prepare stack
+push(a);
+
+call convertSpeed; //function gives result in EBX
+
+stdout.put("Here's your Miles per hour : ");
+stdout.putr32(EBX, 7, 3, ' ');
+stdout.put(nl);
+
+end speedConversion;

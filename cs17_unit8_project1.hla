@@ -1,0 +1,50 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 8 Project 1
+
+program CountUp;
+#include ("stdlib.hhf");
+
+static
+	iDataValue: int8 := 0; //intialize input-value to start counting (signed operator)
+
+begin CountUp;
+
+	stdout.put("Give me a decimal value to use as n: ");
+	stdin.get(iDataValue);
+	stdout.put("Here's your number ");
+	
+	LoopInitialize:
+	
+	mov(0, CL); //variable to count outer loop
+	mov(0, DL); //variable to know where to start the next sequence of number
+	
+	LoopOuterTest: //Outer Loop
+	cmp(CL,iDataValue); //compare CL vs iDataValue
+	mov(DL, BL);
+	jnl LoopDoneOuter; // jump if Not Less Than (<) Jump if CL>=iDataValue 
+	
+	LoopBodyOuter:
+	
+		LoopInnerTest: //Inner Loop
+		cmp(BL,iDataValue); //compare BL vs iDataValue
+		jnle LoopDoneInner; //jump if not less or equal (not <=) BL=>iDataValue
+		
+		LoopBodyInner:
+		stdout.puti8(BL);
+		
+		LoopIncrementInner:
+			inc(BL);
+			jmp LoopInnerTest;
+			
+		LoopDoneInner:
+	
+	LoopIncrementOuter:
+	inc(CL); //increment outer loop
+	inc(DL); //increment starting sequence value
+	jmp LoopOuterTest;
+	
+	LoopDoneOuter:
+	stdout.put(iDataValue);
+	
+end CountUp;

@@ -1,0 +1,69 @@
+program RollingAverage;
+#include ("stdlib.hhf");
+
+static
+	n_for_No : byte := $6E; //n
+	y_for_Yes : byte := $79; //y
+
+	StartNumber : real32 := 0;
+	NextNumber : real32 := 0;
+	ValueCounter : real32 := 1;
+	output : real32 := 0;
+	
+	
+begin RollingAverage;
+
+stdout.put("Feed Me: ");
+stdin.get(StartNumber);
+
+CalculateAgain:
+stdout.put("Feed Me: ");
+stdin.get(NextNumber);
+
+//computer average value
+finit(); //start FPU
+
+//load Start and Next Number
+fld(StartNumber);
+fld(NextNumber);
+faddp(); //add two numbers
+fstp(StartNumber); //store sum to StartNumber for next use
+
+//load ValueCounter
+fld(ValueCounter); //load valuecounter
+fld1(); //load one
+faddp(); //++
+fstp(ValueCounter); //return ValueCounter which is denominator
+
+fld(StartNumber);
+fld(ValueCounter);
+fdivp(); //divide for average
+fstp(output); //store final answer as output
+
+stdout.put("Rolling Average = ");
+stdout.putr32(output, 10, 1, ' ');
+stdout.put(nl);
+
+MoreData:
+stdout.put("More data? ");
+stdin.flushInput();
+stdin.getc(); //store input to register AL
+
+cmp(AL,n_for_No); //if no, then quit
+je Quit;
+
+cmp(AL, y_for_Yes); //if yes, then repeat calculation process
+je CalculateAgain;
+jmp error;
+
+error:
+stdout.put("You didn't pick y or n", nl);
+jmp MoreData;
+
+Quit:
+mov(output, EBX);
+stdout.put("Final rolling average is");
+stdout.putr32(EBX,10, 1, ' ');
+stdout.put(nl);
+
+end RollingAverage;

@@ -1,0 +1,39 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Quiz 1 Number 20
+
+program Quiz1Part2;
+#include ("stdlib.hhf");
+
+static
+	iDataValue: int8 := 0; //intialize input-value to start counting
+
+begin Quiz1Part2;
+
+	stdout.put("Feed me: ");
+	stdin.get(iDataValue);
+	
+	LoopInitialize:
+	mov(0, CL); //variable to count outer loop
+	mov(0, DL); //variable to count inner loop
+	mov(1, BL); //will print each loop
+	
+	LoopOuterTest:
+	cmp(CL,iDataValue); //compare CL register to user input
+	jg LoopDone; //jump to end if not less than
+	
+	LoopInnerTest:
+	stdout.puti8(BL); //print integer on screen
+	inc(DL); // ++
+	cmp(DL,CL); //compare if DL register is same
+	jng LoopInnerTest; //if not same, will keep looping
+	mov(0,DL); //reset inner loop counter
+	
+	LoopInnerIncrement:
+	inc(BL); //print next value in loop
+	inc(CL);
+	jmp LoopOuterTest;
+	
+	LoopDone:
+	
+end Quiz1Part2;

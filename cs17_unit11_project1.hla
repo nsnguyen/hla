@@ -1,0 +1,74 @@
+program Recursive;
+#include ("stdlib.hhf");
+static
+	iDataValue1: int32 := 0; 
+	iDataValue2: int32 := 0;
+	
+///////////////////////////////////////////
+// Function recursiveSubtraction
+///////////////////////////////////////////
+procedure recursiveSubtraction(a: int32; b: int32); @nodisplay; @noframe;
+static
+	returnAddress: dword;
+	
+begin recursiveSubtraction;
+//this procedure returns its answer in EAX(result) so let's not save that register
+		/////get parameters from stack //////////
+		pop(returnAddress);
+		pop(b); //pop b first
+		pop(a); //pop a second
+		//push back return address
+		push(returnAddress);
+		
+		//if b==0, then equals a
+		cmp(b, 0);
+		je bIsZero;
+		
+		//if a==0, then equals b
+		cmp(a, 0);
+		je aIsZero;
+		jmp Neither;
+		
+		bIsZero:
+		mov(a,EAX); // result = a;
+		jmp ExitSequence;
+		
+		aIsZero:
+		sub(b,EAX); //result = -b;
+		jmp ExitSequence;
+		
+		//else
+		Neither:
+		dec(a); //decrease parameter a by 1
+		dec(b);	//decrease parameter b by 1
+		push(a); //push a back into stack first
+		push(b);//push b back into stack second
+		call recursiveSubtraction; //recursive function
+		jmp ExitSequence;
+		
+		
+		ExitSequence:
+		
+		//output is EAX thus register preserve does not need
+		
+		ret();
+		
+end recursiveSubtraction;
+
+
+///////////main program///////////////////////////
+begin Recursive;
+	stdout.put("Feed me A: ");
+	stdin.get(iDataValue1);
+	stdout.put("Feed me B: ");
+	stdin.get(iDataValue2);
+	push(iDataValue1);
+	push(iDataValue2);
+	mov(0,EAX);
+	call recursiveSubtraction;
+	
+	stdout.put("RecursiveSubtraction of A-B = ");
+	stdout.puti32(EAX);
+	stdout.newln();
+	
+end Recursive;

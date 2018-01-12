@@ -1,0 +1,13 @@
+program Decimal2Hex;
+#include ("stdlib.hhf");
+
+static
+	iValue: int8 :=0;
+	
+begin Decimal2Hex;
+	stdout.put("Input a decimal value");
+	stdin.get(iValue);
+	mov(iValue, al);
+	stdout.put("The value ", iValue, " in hex is$", al, nl);
+
+end Decimal2Hex;

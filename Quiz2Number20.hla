@@ -1,0 +1,74 @@
+program Quiz2Number20;
+#include ("stdlib.hhf");
+
+static
+	n: int16 := 0;
+	m: int16 := 0;
+
+///////////////////////////////////
+//Function evaluate
+//////////////////////////////////
+procedure evaluate(n: int16; m: int16); @nodisplay; @noframe;
+static
+		returnAddress: dword;
+		
+begin evaluate;
+		///////get parameters////////
+		pop(returnAddress);
+		pop(m); //16bit
+		pop(n); //16bit
+		push(returnAddress);
+		
+		//need to preserve BX register which will be used in this function
+		push(BX);
+		
+		LoopBegin:
+		stdout.put("n is ");
+		
+		
+		//begin comparsion between n and m
+		mov(n,BX); //register BX is n
+		cmp(BX,m); //compare BX to m
+		jg NmoreM; //if n>m
+		jl NlessM; //if n < m
+		je NequalM; //if n==m
+		
+		
+		
+		NmoreM:
+		stdout.put("greater than or equal to");
+		jmp EndFunction;
+		
+		NlessM:
+		stdout.put("less than or equal to");
+		jmp EndFunction;
+		
+		NequalM:
+		stdout.put("is equal to");
+		jmp EndFunction;
+		
+		EndFunction:
+		
+		stdout.put(" m");
+		
+		//getting back preserved BX value
+		pop(BX);
+		ret();
+
+end evaluate;
+
+////main programm///////
+begin Quiz2Number20;
+stdout.put("Gimme an n: ");
+stdin.get(n);
+stdout.put("Gimme an m: ");
+stdin.get(m);
+
+//push into stack
+push(n);
+push(m);
+
+call evaluate;
+stdout.put(nl);
+
+end Quiz2Number20;

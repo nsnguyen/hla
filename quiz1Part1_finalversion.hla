@@ -1,0 +1,132 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Quiz 1 Number 19
+
+program Quiz1Part1;
+#include ("stdlib.hhf");
+
+static
+	inputValue1: int8 :=0; //input first number
+	inputValue2: int8 :=0; //input second number
+	inputValue3: int8 :=0; //input third number
+	inputValue4: int8 :=0; //input fourth number
+	inputValue5: int8 :=0; //input fifth number
+	inputValue6: int8 :=0; //input sixth number
+	inputValue7: int8 :=0; //input seventh number
+	
+	currentValue: int8 :=0; //tempValue
+	swapValue: int8 :=0; //input for swap value
+	nextValue: int8 :=0; //largest number
+	
+begin Quiz1Part1;
+
+//************USER INPUT AREA ***********//
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue1);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue2);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue3);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue4);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue5);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue6);
+	
+	stdout.put("Gimme data: ");
+	stdin.get(inputValue7);
+	
+	LoopInitialize:
+	mov(1, BL); //BL register will be used to loop down the input values
+	mov(0, BH); //BH register will be used to count swaps
+	mov(0, CL); //CL register will be used to store previous value
+	mov(0, CH); //CH register will be used to store next value
+	mov(inputValue1, DL);
+	mov(DL, currentValue);
+	jmp LoopStarter;
+	
+	//******************SWAP*************************//
+	SwapTrue:
+	mov(swapValue, BH); //move swapValue to BH register
+	inc(BH); //increase BH register by 1
+	mov(BH, swapValue); //move back to swapValue memory variable
+	inc(BL); //increase number counter by 1
+	mov(CH,currentValue);
+	jmp LoopStarter;
+	
+	SwapFalse:
+	inc(BL); //increase number counter by 1
+	jmp LoopStarter;
+	
+	//************************************************//
+	LoopStarter:
+	
+	SecondValue:
+	cmp(BL,1); //compare if it needs to go to third value
+	jne ThirdValue; //if third value is false jump to SecondValue label
+	mov(currentValue, CL);
+	mov(inputValue2, CH);
+	cmp(CL,CH);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	ThirdValue:
+	cmp(BL,2); //compare if it needs to go to fourth value
+	jne FourthValue; //if fourth value is false jump to thirdvalue label
+	mov(currentValue, CL);
+	mov(inputValue3, CH);
+	cmp(CH,CL);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	
+	FourthValue:
+	cmp(BL,3); //compare if it needs to go to fourth value
+	jne FifthValue; //if fourth value is false jump to thirdvalue label
+	mov(currentValue, CL);
+	mov(inputValue4, CH);
+	cmp(CH,CL);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	FifthValue:
+	cmp(BL,4); //compare if it needs to go to fourth value
+	jne SixthValue; //if fourth value is false jump to thirdvalue label
+	mov(currentValue, CL);
+	mov(inputValue5, CH);
+	cmp(CH,CL);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	
+	
+	SixthValue:
+	cmp(BL,5); //compare if it needs to go to fourth value
+	jne SeventhValue; //if fourth value is false jump to thirdvalue label
+	mov(currentValue, CL);
+	mov(inputValue6, CH);
+	cmp(CH,CL);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	
+	SeventhValue:
+	cmp(BL,5); //compare if it needs to go to fourth value
+	jne Ending; //if fourth value is false jump to thirdvalue label
+	mov(currentValue, CL);
+	mov(inputValue7, CH);
+	cmp(CH,CL);
+	jg SwapTrue;
+	jng SwapFalse;
+	
+	
+	Ending:
+	stdout.put("There were ", swapValue, " swaps and the biggest number entered was ", currentValue);
+
+end Quiz1Part1;

@@ -1,0 +1,86 @@
+program strlenFunction;
+#include("stdlib.hhf");
+#include("cs17Final.hla");
+
+const
+	nullchar: byte := 0;
+
+static
+	stringData: byte[4] := ['a', 'b', 'c', '0'];
+	stringDataLength : uns16 := 8; //max number of chars string can hold NOT including NULL
+
+///////////////////////////////////
+//function strlen
+////////////////////////////////
+procedure strlen(baseStringAddress: dword); @nodisplay; @noframe;
+static
+	dReturnAddress: dword;
+	
+	wDXRegister: word :=0 ; //to preserve DX
+	dEBXRegister: dword :=0; //to preserve EBX
+	
+	begin strlen;
+	//entry sequence and preserve registers
+	mov(EBX, dEBXRegister); //preserve EBX
+	mov(DX, wDXRegister); //preserve DX
+	pop(dReturnAddress); // to return address
+	
+	pop(EBX); //base address of string
+	
+	//push back return address
+	push (dReturnAddress);
+	
+	//preserve registers
+	push(dEBXRegister);
+	push(wDXRegister);
+
+	//begin sub-task
+	mov(0, DX); //EBX will be the address of string[i]
+	
+	putsRepeatLoopInt:
+	mov(0,AL); //AL will count the length
+	
+	putsRepeatLoop:
+	cmp([EBX], DH);
+	je putsEndLoop;
+	
+	inc(AL); //increment length by 1
+	inc(EBX);
+	jmp putsRepeatLoop;
+	
+	putsEndLoop:
+	stdout.puti8(AL); //display the length counted
+	
+	//exit sequence and restore registers
+	pop(DX);
+	pop(EBX);
+	
+	ret();
+	end strlen;
+	
+
+///main program////////
+begin strlenFunction;
+
+//get stringData
+stdout.put("Feed me: ");
+mov(&stringData, EAX);
+push(EAX);
+push(stringDataLength);
+call gets;
+
+//output stringData
+stdout.put("The String You Entered: ");
+mov(&stringData, EAX);
+push(EAX);
+call puts;
+
+stdout.put(" Has length = ");
+mov(&stringData, EAX);
+push(EAX);
+call strlen;
+
+stdout.put(nl);
+
+
+end strlenFunction;

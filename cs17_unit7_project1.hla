@@ -1,0 +1,115 @@
+//Name: Nguyen Nguyen
+//ID: 1430744
+//Unit 7 Project 1
+
+program BinaryOutput;
+#include ("stdlib.hhf");
+
+static
+	iDataValue : int8 :=0; //the value is used to insepct
+
+begin BinaryOutput;
+	//Prompt the user
+	stdout.put("Gimme a decimal value to print: ");
+	stdin.get(iDataValue);
+	
+	//get the value into register BH (8-bit);
+	mov(iDataValue, BH);
+	
+	stdout.put(iDataValue, " is ");
+	
+	//Logic counts one bit and print out at a time for 8 times
+	
+	//First Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out al lbits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	//Second Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	//Third Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	//Fourth Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	stdout.put("_");
+	
+	//Fifth Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	//Sixth Time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	//seventh time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	
+	//eighth time
+	//rotate left so bit 7 will be pushed into carry bit (0 bit in EFLAG)
+	shl(1, BH);
+	
+	//put lower eight EFLAG bits into register AH
+	lahf();
+	
+	//mask out all bits in AH except bit 0 which is the carry bit
+	and (%0000_0001, AH);
+	stdout.puti8(AH);
+	
+	stdout.put(nl);
+end BinaryOutput;
